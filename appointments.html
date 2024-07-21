@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointment Scheduling</title>
+  <link rel="stylesheet" href="appointments.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Schedule an Appointment</h1>
+    <form id="appointmentForm">
+      <!-- Appointment Information -->
+      <fieldset>
+        <legend>Appointment Information</legend>
+        
+        <label for="appointmentDate">Date:</label>
+        <input type="date" id="appointmentDate" name="appointmentDate" required>
+
+        <label for="appointmentTime">Time:</label>
+        <input type="time" id="appointmentTime" name="appointmentTime" required>
+
+        <label for="doctor">Doctor:</label>
+        <select id="doctor" name="doctor" required>
+          <option value="drSmith">Dr. Smith</option>
+          <option value="drJohnson">Dr. Johnson</option>
+          <option value="drWilliams">Dr. Williams</option>
+        </select>
+
+        <label for="reason">Reason for Appointment:</label>
+        <textarea id="reason" name="reason" required></textarea>
+      </fieldset>
+
+      <!-- Form Buttons -->
+      <div class="form-buttons">
+        <button type="submit">Submit</button>
+        <button type="reset">Reset</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reminders</title>
+  <link rel="stylesheet" href="reminders.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Reminders</h1>
+    
+    <!-- Reminders List -->
+    <section class="reminders-list">
+      <ul id="reminders">
+        <li>
+          <span class="reminder-text">Doctor's Appointment - July 30, 2024</span>
+          <button class="edit-button">Edit</button>
+          <button class="delete-button">Delete</button>
+        </li>
+        <li>
+          <span class="reminder-text">Medication Refill - August 15, 2024</span>
+          <button class="edit-button">Edit</button>
+          <button class="delete-button">Delete</button>
+        </li>
+      </ul>
+    </section>
+    
+    <!-- Add New Reminder -->
+    <section class="add-reminder">
+      <h2>Add New Reminder</h2>
+      <label for="reminderText">Reminder:</label>
+      <input type="text" id="reminderText" placeholder="Enter reminder details">
+
+      <label for="reminderDate">Date:</label>
+      <input type="date" id="reminderDate">
+
+      <button id="addReminderButton">Add Reminder</button>
+    </section>
+  </div>
+
+  <script>
+    // JavaScript to handle the functionality of adding, editing, and deleting reminders
+    document.getElementById('addReminderButton').addEventListener('click', function() {
+      const text = document.getElementById('reminderText').value;
+      const date = document.getElementById('reminderDate').value;
+      if (text && date) {
+        const ul = document.getElementById('reminders');
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="reminder-text">${text} - ${date}</span>
+                        <button class="edit-button">Edit</button>
+                        <button class="delete-button">Delete</button>`;
+        ul.appendChild(li);
+
+        // Clear input fields
+        document.getElementById('reminderText').value = '';
+        document.getElementById('reminderDate').value = '';
+      }
+    });
+
+    // Event delegation for edit and delete buttons
+    document.querySelector('.reminders-list').addEventListener('click', function(event) {
+      if (event.target.classList.contains('edit-button')) {
+        // Handle edit reminder
+        const li = event.target.parentElement;
+        const text = li.querySelector('.reminder-text').textContent;
+        const newText = prompt('Edit reminder:', text);
+        if (newText) {
+          li.querySelector('.reminder-text').textContent = newText;
+        }
+      } else if (event.target.classList.contains('delete-button')) {
+        // Handle delete reminder
+        const li = event.target.parentElement;
+        li.remove();
+      }
+    });
+  </script>
+</body>
+</html>

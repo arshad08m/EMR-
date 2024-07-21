@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitals and Health Calculations</title>
+  <link rel="stylesheet" href="vitals.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Vitals and Health Calculations</h1>
+    
+    <!-- Vitals Section -->
+    <section class="vitals-section">
+      <h2>Enter Vital Signs</h2>
+      <label for="temperature">Temperature (°C):</label>
+      <input type="number" id="temperature" placeholder="e.g., 37.5" step="0.1">
+
+      <label for="heartRate">Heart Rate (bpm):</label>
+      <input type="number" id="heartRate" placeholder="e.g., 75">
+
+      <label for="bloodPressure">Blood Pressure (mmHg):</label>
+      <input type="text" id="bloodPressure" placeholder="e.g., 120/80">
+
+      <label for="respiratoryRate">Respiratory Rate (breaths/min):</label>
+      <input type="number" id="respiratoryRate" placeholder="e.g., 16">
+
+      <button id="saveVitals">Save Vital Signs</button>
+    </section>
+
+    <!-- Previous Vitals -->
+    <section class="previous-vitals">
+      <h2>Previous Vital Signs</h2>
+      <ul id="vitalsList"></ul>
+    </section>
+
+    <!-- BMI Calculation Section -->
+    <section class="bmi-section">
+      <h2>BMI Calculation</h2>
+      <label for="height">Height (cm):</label>
+      <input type="number" id="height" placeholder="e.g., 175">
+
+      <label for="weight">Weight (kg):</label>
+      <input type="number" id="weight" placeholder="e.g., 70">
+
+      <button id="calculateBMI">Calculate BMI</button>
+      <p id="bmiResult"></p>
+    </section>
+
+    <!-- Glucose Level Section -->
+    <section class="glucose-section">
+      <h2>Glucose Level</h2>
+      <label for="glucoseLevel">Glucose Level (mg/dL):</label>
+      <input type="number" id="glucoseLevel" placeholder="e.g., 90">
+
+      <button id="checkGlucose">Check Glucose Level</button>
+      <p id="glucoseResult"></p>
+    </section>
+  </div>
+
+  <script>
+    // Save vital signs to local storage
+    document.getElementById('saveVitals').addEventListener('click', function() {
+      const temperature = document.getElementById('temperature').value;
+      const heartRate = document.getElementById('heartRate').value;
+      const bloodPressure = document.getElementById('bloodPressure').value;
+      const respiratoryRate = document.getElementById('respiratoryRate').value;
+
+      if (temperature && heartRate && bloodPressure && respiratoryRate) {
+        const vitalSign = {
+          temperature,
+          heartRate,
+          bloodPressure,
+          respiratoryRate,
+          date: new Date().toLocaleString()
+        };
+
+        // Get existing vital signs from local storage
+        const vitals = JSON.parse(localStorage.getItem('vitalSigns')) || [];
+        vitals.push(vitalSign);
+        localStorage.setItem('vitalSigns', JSON.stringify(vitals));
+
+        // Clear input fields
+        document.getElementById('temperature').value = '';
+        document.getElementById('heartRate').value = '';
+        document.getElementById('bloodPressure').value = '';
+        document.getElementById('respiratoryRate').value = '';
+
+        displayVitals();
+      } else {
+        alert('Please enter all vital signs.');
+      }
+    });
+
+    // Display saved vital signs
+    function displayVitals() {
+      const vitals = JSON.parse(localStorage.getItem('vitalSigns')) || [];
+      const vitalsList = document.getElementById('vitalsList');
+      vitalsList.innerHTML = '';
+
+      vitals.forEach((vital, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `Date: ${vital.date}, Temp: ${vital.temperature}°C, HR: ${vital.heartRate} bpm, BP: ${vital.bloodPressure}, RR: ${vital.respiratoryRate} breaths/min 
+                        <button class="delete-button" data-index="${index}">Delete</button>`;
+        vitalsList.appendChild(li);
+      });
+    }
+
+    // Initial display of vital signs on page load
+    displayVitals();
+
+    // Event delegation for delete buttons
+    document.querySelector('.previous-vitals').addEventListener('click', function(event) {
+      if (event.target.classList.contains('delete-button')) {
+        const index = event.target.getAttribute('data-index');
+        const vitals = JSON.parse(localStorage.getItem('vitalSigns')) || [];
+
+        // Remove the selected vital sign
+        vitals.splice(index, 1);
+        localStorage.setItem('vitalSigns', JSON.stringify(vitals));
+
+        // Re-display the updated list
+        displayVitals();
+      }
+    });
+
+    // BMI Calculation
+    document.getElementById('calculateBMI').addEventListener('click', function() {
+      const heightCm = parseFloat(document.getElementById('height').value);
+      const weightKg = parseFloat(document.getElementById('weight').value);
+      
+      if (heightCm && weightKg) {
+        const heightM = heightCm / 100;
+        const bmi = weightKg / (heightM * heightM);
+        document.getElementById('bmiResult').textContent = `Your BMI is ${bmi.toFixed(2)}`;
+      } else {
+        document.getElementById('bmiResult').textContent = 'Please enter both height and weight.';
+      }
+    });
+
+    // Glucose Level Check
+    document.getElementById('checkGlucose').addEventListener('click', function() {
+      const glucoseLevel = parseFloat(document.getElementById('glucoseLevel').value);
+
+      if (glucoseLevel) {
+        let status;
+        if (glucoseLevel < 70) {
+          status = 'Low';
+        } else if (glucoseLevel <= 100) {
+          status = 'Normal';
+        } else {
+          status = 'High';
+        }
+        document.getElementById('glucoseResult').textContent = `Glucose level status: ${status}`;
+      } else {
+        document.getElementById('glucoseResult').textContent = 'Please enter a glucose level.';
+      }
+    });
+  </script>
+</body>
+</html>

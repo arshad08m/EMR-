@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login/Sign Up</title>
+  <link rel="stylesheet" href="login-signup.css">
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const signupForm = document.getElementById('signup-form');
+      const loginForm = document.getElementById('login-form');
+      const loginMessage = document.getElementById('login-message');
+
+      signupForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const username = signupForm.username.value;
+        const email = signupForm.email.value;
+        const password = signupForm.password.value;
+
+        if (!username || !email || !password) {
+          alert('Please fill in all fields.');
+          return;
+        }
+
+        const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+        if (existingUsers.find(user => user.username === username)) {
+          alert('Username already exists.');
+          return;
+        }
+
+        existingUsers.push({ username, email, password });
+        localStorage.setItem('users', JSON.stringify(existingUsers));
+
+        alert('Signup successful! You can now log in.');
+        signupForm.reset();
+        document.getElementById('signup-section').style.display = 'none';
+        document.getElementById('login-section').style.display = 'block';
+      });
+
+      loginForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const username = loginForm.username.value;
+        const password = loginForm.password.value;
+
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(user => user.username === username && user.password === password);
+
+        if (user) {
+          loginMessage.textContent = 'Login successful! Redirecting to dashboard...';
+          setTimeout(() => {
+            window.location.href = 'main.html'; // Redirect to the main page
+          }, 2000);
+        } else {
+          loginMessage.textContent = 'Invalid username or password.';
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="auth-container">
+    <div id="signup-section">
+      <h1>Sign Up</h1>
+      <form id="signup-form">
+        <label for="signup-username">Username:</label>
+        <input type="text" id="signup-username" name="username" required>
+
+        <label for="signup-email">Email:</label>
+        <input type="email" id="signup-email" name="email" required>
+
+        <label for="signup-password">Password:</label>
+        <input type="password" id="signup-password" name="password" required>
+
+        <button type="submit">Sign Up</button>
+
+        <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+      </form>
+    </div>
+
+    <div id="login-section" style="display:none;">
+      <h1>Login</h1>
+      <form id="login-form">
+        <label for="login-username">Username:</label>
+        <input type="text" id="login-username" name="username" required>
+
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" name="password" required>
+
+        <button type="submit">Login</button>
+
+        <p id="login-message"></p>
+
+        <p>Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function showLogin() {
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+    }
+
+    function showSignup() {
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('signup-section').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
